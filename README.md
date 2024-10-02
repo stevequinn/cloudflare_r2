@@ -1,3 +1,5 @@
-# What's Worn Cloudflare R2 CDN
+# Cloudflare R2 Helper Scripts
 
-This is an upload script that uses boto3 to upload files to the Cloudflare R2 object store.
+This contains upload and delete functionality for Cloudflare R2.
+
+Make sure to copy the `dot.env` file to `.env` and update its values.
