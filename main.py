@@ -14,7 +14,7 @@ from cloudflare_r2 import CloudflareR2
 from cloudflare_r2_delete import delete
 from cloudflare_r2_upload import upload
 
-def main():
+def main() -> None:
     """
     Main function to handle command-line arguments and initiate the appropriate process.
     """
@@ -27,7 +27,7 @@ def main():
     args = parser.parse_args()
 
     try:
-        r2 = CloudflareR2()
+        r2: CloudflareR2 = CloudflareR2()
 
         if args.upload and args.base_path:
             upload(r2, args.path, args.base_path)
