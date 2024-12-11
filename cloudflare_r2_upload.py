@@ -12,6 +12,7 @@ Usage:
 import os
 import hashlib
 import argparse
+import mimetypes
 from typing import Dict, Any
 from botocore.exceptions import ClientError
 from cloudflare_r2 import CloudflareR2
@@ -81,9 +82,10 @@ def upload_file(cloudflare_r2: CloudflareR2, file_path: str, relative_path: str)
         else:
             print(f"Uploading new file {key}...")
 
+        mime = mimetypes.guess_type(file_path)[0]
         with open(file_path, 'rb') as file:
-            cloudflare_r2.s3.put_object(Bucket=cloudflare_r2.bucket_name, Key=key, Body=file)
-        print(f"Successfully uploaded {key}")
+            cloudflare_r2.s3.put_object(Bucket=cloudflare_r2.bucket_name, Key=key, Body=file, ContentType=mime)
+        print(f"Successfully uploaded {key} with ContentType {mime}")
     except ClientError as e:
         print(f"Error uploading {key}: {str(e)}")
 
