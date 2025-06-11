@@ -21,7 +21,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Manage files in Cloudflare R2")
     parser.add_argument("path", help="Path to file or directory to upload or delete")
     parser.add_argument("-b", "--base_path", help="""Base path to use as the root in R2.
-                        The local directory structure will be mirrored in R2 from here down. (required for upload)""")
+                        The local directory structure will be mirrored in R2 from here down. (required for upload)
+                        IMPORTANT: This is the local base path on your file system, not the R2 bucket path.
+                        """)
     parser.add_argument("-u", "--upload", action='store_true', help="Upload directory or file")
     parser.add_argument("-d", "--delete", action='store_true', help="Delete directory or file specified by path")
     args = parser.parse_args()
