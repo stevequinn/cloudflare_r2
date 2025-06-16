@@ -6,6 +6,7 @@ It can be run as a standalone script or imported as a module in other Python scr
 
 Usage:
     As a script: python cloudflare_r2_delete.py <path>
+                python cloudflare_r2_delete.py <path> --bucket <bucket_name>
     As a module: from cloudflare_r2_delete import delete
 """
 import argparse
@@ -45,10 +46,11 @@ def main() -> None:
     """
     parser = argparse.ArgumentParser(description="Delete file or directory from Cloudflare R2")
     parser.add_argument("path", help="Path to file or directory to delete")
+    parser.add_argument("--bucket", "--bucket_name", dest="bucket_name", help="Cloudflare R2 bucket name (overrides CLOUDFLARE_BUCKET_NAME environment variable)")
     args = parser.parse_args()
 
     try:
-        cf = CloudflareR2()
+        cf = CloudflareR2(bucket_name=args.bucket_name)
         delete(cf, args.path)
     except ValueError as e:
         print(f"Error: {str(e)}")

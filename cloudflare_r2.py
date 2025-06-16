@@ -20,16 +20,21 @@ class CloudflareR2:
     Cloudflare R2 S3 instance class
     """
 
-    def __init__(self) -> None:
+    def __init__(self, bucket_name: Optional[str] = None) -> None:
         """
         Initialize the CloudflareR2 with necessary credentials and configurations.
+
+        Args:
+            bucket_name (Optional[str]): Optional bucket name to use instead of environment variable.
+                                       If not provided, uses CLOUDFLARE_BUCKET_NAME from environment.
+
         Raises ValueError if any required environment variables are missing.
         """
         load_dotenv()
         self._account_id: Optional[str] = os.environ.get('CLOUDFLARE_ACCOUNT_ID')
         self._access_key_id: Optional[str] = os.environ.get('CLOUDFLARE_ACCESS_KEY_ID')
         self._secret_access_key: Optional[str] = os.environ.get('CLOUDFLARE_SECRET_ACCESS_KEY')
-        self._bucket_name: Optional[str] = os.environ.get('CLOUDFLARE_BUCKET_NAME')
+        self._bucket_name: Optional[str] = bucket_name or os.environ.get('CLOUDFLARE_BUCKET_NAME')
         self._endpoint_url: Optional[str] = os.environ.get('CLOUDFLARE_ENDPOINT')
 
         if not all([self._account_id, self._access_key_id, self._secret_access_key,
@@ -54,4 +59,5 @@ class CloudflareR2:
         """
         Bucket Name Getter
         """
-        return self._bucket_name
+        # _bucket_name is guaranteed to be a string due to validation in __init__
+        return self._bucket_name  # type: ignore

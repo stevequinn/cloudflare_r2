@@ -8,6 +8,8 @@ Usage:
     As a script:
         python cloudflare_r2_main.py -u <path> -b <base_path>  # For upload
         python cloudflare_r2_main.py -d <path>                 # For delete
+        python cloudflare_r2_main.py -u <path> -b <base_path> --bucket <bucket_name>  # Upload with custom bucket
+        python cloudflare_r2_main.py -d <path> --bucket <bucket_name>                  # Delete with custom bucket
 """
 import argparse
 from cloudflare_r2 import CloudflareR2
@@ -25,12 +27,13 @@ def main() -> None:
                         IMPORTANT: This is the local base path on your file system, not the R2 bucket path.
                         Most likely this will be ../whatsworn-cdn/
                         """)
+    parser.add_argument("--bucket", "--bucket_name", dest="bucket_name", help="Cloudflare R2 bucket name (overrides CLOUDFLARE_BUCKET_NAME environment variable)")
     parser.add_argument("-u", "--upload", action='store_true', help="Upload directory or file")
     parser.add_argument("-d", "--delete", action='store_true', help="Delete directory or file specified by path")
     args = parser.parse_args()
 
     try:
-        r2: CloudflareR2 = CloudflareR2()
+        r2: CloudflareR2 = CloudflareR2(bucket_name=args.bucket_name)
 
         if args.upload and args.base_path:
             upload(r2, args.path, args.base_path)

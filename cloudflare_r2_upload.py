@@ -6,6 +6,7 @@ It can be run as a standalone script or imported as a module in other Python scr
 
 Usage:
     As a script: python cloudflare_r2_upload.py <path> -b <base_path>
+                python cloudflare_r2_upload.py <path> -b <base_path> --bucket <bucket_name>
     As a module: from cloudflare_r2_upload import upload
 """
 
@@ -62,12 +63,13 @@ def upload_file(cloudflare_r2: CloudflareR2, file_path: str, relative_path: str)
         file_path (str): Path to the local file.
         relative_path (str): Relative path to use as the key in the bucket.
     """
+    key: str = relative_path.replace("\\", "/")
+
     try:
         if ".DS_Store" in file_path:
             print(f"Ignoring {file_path}")
             return
 
-        key: str = relative_path.replace("\\", "/")
         local_md5: str = calculate_md5(file_path)
 
         if file_exists(cloudflare_r2, key):
@@ -125,10 +127,11 @@ def main() -> None:
     parser.add_argument("-b", "--base_path", required=True,
                         help="""Base path to use as the root in R2.
                         The local directory structure will be mirrored in R2 from here down.""")
+    parser.add_argument("--bucket", "--bucket_name", dest="bucket_name", help="Cloudflare R2 bucket name (overrides CLOUDFLARE_BUCKET_NAME environment variable)")
     args = parser.parse_args()
 
     try:
-        cloudflare_r2 = CloudflareR2()
+        cloudflare_r2 = CloudflareR2(bucket_name=args.bucket_name)
         upload(cloudflare_r2, args.path, args.base_path)
     except ValueError as e:
         print(f"Error: {str(e)}")
